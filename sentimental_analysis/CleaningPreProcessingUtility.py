@@ -22,7 +22,7 @@ class CleaningPreProcessingUtility(object):
     """CleaningPreProcessingUtility is a utility class for processing raw HTML text into segments for further learning"""
 
     @staticmethod
-    def review_to_wordlist( review, remove_stopwords=False ):
+    def document_to_wordlist( review, remove_stopwords=False ):
         # Function to convert a document to a sequence of words,
         # optionally removing stop words.  Returns a list of words.
         #
@@ -45,7 +45,7 @@ class CleaningPreProcessingUtility(object):
 
     # Define a function to split a review into parsed sentences
     @staticmethod
-    def review_to_sentences( review, tokenizer, remove_stopwords=False ):
+    def document_to_sentences( review, tokenizer, remove_stopwords=False ):
         # Function to split a review into parsed sentences. Returns a
         # list of sentences, where each sentence is a list of words
         #
