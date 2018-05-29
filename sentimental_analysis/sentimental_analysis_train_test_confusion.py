@@ -17,6 +17,11 @@ import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
 import logging
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, log_loss
+
+# Logging for Visual Comparison
+log_cols = ["Classifier", "Accuracy", "Log Loss"]
+log = pd.DataFrame(columns=log_cols)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -154,10 +159,7 @@ class SATrain:
         self.output = pd.DataFrame(data={"id": self.X_test[..., keyColumn], "sentiment": self.result})
         self.output.to_csv(os.path.join(os.path.dirname(__file__), 'data', \
                                         resultFileName), index=False, quoting=columnsCount)
-
         logger.info('Writing results to %s' % (resultFileName))
-
-        from sklearn.metrics import confusion_matrix, classification_report
         logger.info('Confusion Matrix:\n')
         cm = confusion_matrix(self.y_test, self.result)
         logger.info(str(cm))
@@ -200,6 +202,41 @@ class SATrain:
         plt.xticks(np.arange(1, 1 + 2 * top_features), feature_names[top_coefficients], rotation=60, ha='right')
         plt.show()
 
+    def moreMetrics(self, model=modelMap.get('svm')):
+
+        global log
+
+        print("=" * 30)
+        print(model.modelClass)
+
+        print('****Results****')
+        acc = accuracy_score(self.y_test, self.result)
+        print("Accuracy: {:.4%}".format(acc))
+        ll = log_loss(self.y_test, self.result)
+        print("Log Loss: {}".format(ll))
+
+        log_entry = pd.DataFrame([[model.modelClass, acc * 100, ll]], columns=log_cols)
+        log = log.append(log_entry)
+
+        print("=" * 30)
+
+        # horizontal bar plot
+
+        import seaborn as sns
+        sns.set_color_codes("muted")
+        sns.barplot(x='Accuracy', y='Classifier', data=log, color="b")
+
+        plt.xlabel('Accuracy %')
+        plt.title('Classifier Accuracy')
+        plt.show()
+
+        sns.set_color_codes("muted")
+        sns.barplot(x='Log Loss', y='Classifier', data=log, color="g")
+
+        plt.xlabel('Log Loss')
+        plt.title('Classifier Log Loss')
+        plt.show()
+
 
 if __name__ == "__main__":
     trainIns = SATrain()
@@ -213,4 +250,5 @@ if __name__ == "__main__":
     #    trainIns.sentimentHistogram(top_features=40)
 
     trainIns.resultGraph()
+    trainIns.moreMetrics(modelMap.get('random_forest'))
 
