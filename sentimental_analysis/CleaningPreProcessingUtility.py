@@ -16,8 +16,10 @@ import numpy as np
 
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from nltk import WordNetLemmatizer
 
-
+#TODO: do stemming and lemmatization
 class CleaningPreProcessingUtility(object):
     """CleaningPreProcessingUtility is a utility class for processing raw HTML text into segments for further learning"""
 
@@ -40,7 +42,15 @@ class CleaningPreProcessingUtility(object):
             stops = set(stopwords.words("english"))
             words = [w for w in words if not w in stops]
         #
-        # 5. Return a list of words
+        # 5. Lemmatization
+        lemma = nltk.WordNetLemmatizer()
+        words = list(map(lambda x:lemma.lemmatize(x),words))
+        #
+        # 6. Stemming the words
+        stemmer = PorterStemmer()
+        words = list(map(lambda x:stemmer.stem(x),words))
+
+        # 7. Return a list of words
         return(words)
 
     # Define a function to split a review into parsed sentences
