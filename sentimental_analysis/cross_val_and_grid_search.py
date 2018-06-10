@@ -171,6 +171,13 @@ class SATrain:
 
         # TODO: implement roc curve plot
 
+    def cross_val_validation(self):
+
+        from sk_learn.model_selection import cross_val_score
+        self.accuracies = cross_val_score(estimator=self.classifier, X=self.X_train, y=self.y_train, cv=10)
+        print(self.accuracies.mean())
+        print(self.accuracies.std())
+
     def resultGraph(self):
 
         # Pie chart, where the slices will be ordered and plotted counter-clockwise:
@@ -238,6 +245,20 @@ class SATrain:
         plt.title('Classifier Log Loss')
         plt.show()
 
+    def grid_search(self):
+
+        from sk_learn.model_selection import GridSearchCV
+        parameters = [{'C': [1, 10, 100, 1000], 'gamma': [0.5, 0.1, 0.01, 0.001, 0.00001]}]
+        grid_search = GridSearchCV(estimator=self.classifier,
+                                   param_grid=parameters,
+                                   scoring='accuracy',
+                                   cv=10,
+                                   n_jobs=-1)
+        grid_search.fit(self.X_train, self.y_train)
+        best_accuracy = grid_search.best_score_
+        best_parameters = grid_search.best_params_
+        print("%s -- %s".format(best_accuracy, best_parameters))
+
 
 if __name__ == "__main__":
     trainIns = SATrain()
@@ -250,6 +271,10 @@ if __name__ == "__main__":
     trainIns.modelTraining(modelMap.get('random_forest'))
     #    trainIns.modelTraining()
     trainIns.modelValidation(0, 'TestResults25.csv', 3)
+    trainIns.cross_val_validation()
     #    trainIns.sentimentHistogram(top_features=40)
+
     trainIns.resultGraph()
     trainIns.moreMetrics(modelMap.get('random_forest'))
+    trainIns.grid_search()
+

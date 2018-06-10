@@ -16,7 +16,7 @@ import os
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.ensemble import RandomForestClassifier
-from sentimental_analysis.word_2_vec_utility import Word2VecUtility
+from sentimental_analysis.CleaningPreProcessingUtility import Word2VecUtility
 import nltk
 from sklearn.naive_bayes import GaussianNB
 

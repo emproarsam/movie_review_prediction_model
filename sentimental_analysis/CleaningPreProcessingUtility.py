@@ -16,15 +16,13 @@ import numpy as np
 
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
-from nltk import WordNetLemmatizer
 
-#TODO: do stemming and lemmatization
+
 class CleaningPreProcessingUtility(object):
     """CleaningPreProcessingUtility is a utility class for processing raw HTML text into segments for further learning"""
 
     @staticmethod
-    def document_to_wordlist( review, remove_stopwords=False ):
+    def review_to_wordlist( review, remove_stopwords=False ):
         # Function to convert a document to a sequence of words,
         # optionally removing stop words.  Returns a list of words.
         #
@@ -42,20 +40,12 @@ class CleaningPreProcessingUtility(object):
             stops = set(stopwords.words("english"))
             words = [w for w in words if not w in stops]
         #
-        # 5. Lemmatization
-        lemma = nltk.WordNetLemmatizer()
-        words = list(map(lambda x:lemma.lemmatize(x),words))
-        #
-        # 6. Stemming the words
-        stemmer = PorterStemmer()
-        words = list(map(lambda x:stemmer.stem(x),words))
-
-        # 7. Return a list of words
+        # 5. Return a list of words
         return(words)
 
     # Define a function to split a review into parsed sentences
     @staticmethod
-    def document_to_sentences( review, tokenizer, remove_stopwords=False ):
+    def review_to_sentences( review, tokenizer, remove_stopwords=False ):
         # Function to split a review into parsed sentences. Returns a
         # list of sentences, where each sentence is a list of words
         #
@@ -68,7 +58,7 @@ class CleaningPreProcessingUtility(object):
             # If a sentence is empty, skip it
             if len(raw_sentence) > 0:
                 # Otherwise, call review_to_wordlist to get a list of words
-                sentences.append(CleaningPreProcessingUtility.review_to_wordlist( raw_sentence, \
+                sentences.append( Word2VecUtility.review_to_wordlist( raw_sentence, \
                   remove_stopwords ))
         #
         # Return the list of sentences (each sentence is a list of words,
